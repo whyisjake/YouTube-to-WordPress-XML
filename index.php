@@ -1,39 +1,47 @@
 <?php
 
-$limit = (!empty($_REQUEST['offset']) ? $_REQUEST['offset'] : null);
-require('../wp-load.php');
-
-$file = 'http://gdata.youtube.com/feeds/api/users/makemagazine/playlists?max-results=1&alt=json&offset=1&start-index=' . $limit;
-$contents = file_get_contents($file);
-$playlists = json_decode($contents);
-//print_r($playlists);
-$id = '$t';
-$feedlink = 'gd$feedLink';
-
-$videos = $playlists->feed->entry[0]->$feedlink;
-$url = $videos[0]->href . '?alt=json&max-results=50&start-index=25';
-//echo $url;
-
-$contents = file_get_contents($url);
-$videosobj = json_decode($contents);
-//print_r($videosobj);
-
-$GLOBALS['t'] = '$t';
-$GLOBALS['playlist'] = $videosobj->feed->title->$t;
-
-//echo $playlist;
-
-$videos = $videosobj->feed->entry;
-
-
-header("Content-type: text/xml; charset=utf-8");
-
-//print_r($videos[0]);
-
+// Change the names of categories be dashed, rather then have spaces.
 function make_dashed($str) {
 	$dashed = str_replace(' ', '-', $str );
 	return $dashed;
 }
+
+
+// GLobals //
+
+$GLOBALS['t'] = '$t';
+$GLOBALS['playlist'] = $videosobj->feed->title->$t;
+
+// Add a query parameter for playlists.
+$limit = (!empty($_REQUEST['offset']) ? $_REQUEST['offset'] : null);
+//Username
+$username = (!empty($_REQUEST['username']) ? $_REQUEST['username'] : null);
+//Username
+$start = (!empty($_REQUEST['start']) ? $_REQUEST['start'] : null);
+
+//Path to the WordPress files.
+require('../wp-load.php');
+
+function make_get_the_playlist_feed() {
+
+	// Get the the playlist that we are going to generate the feed for.
+	// This is offset so that only one is fetched at a time.
+	// Using the offset query param, you can go down the list to generate one file for each playlist.
+	$file = 'http://gdata.youtube.com/feeds/api/users/' . $username . '/playlists?max-results=1&alt=json&offset=1&start-index=' . $limit;
+	$contents = file_get_contents($file);
+	$playlists = json_decode($contents);
+	$feedlink = 'gd$feedLink';
+	$videos = $playlists->feed->entry[0]->$feedlink;
+	$url = $videos[0]->href . '?alt=json&max-results=50&start-index=' . $start;
+	$contents = file_get_contents($url);
+	$videosobj = json_decode($contents);
+	$videos = $videosobj->feed->entry;
+}
+
+//Spit out the header with the correct content type.
+header("Content-type: text/xml; charset=utf-8");
+
+// I have this echoed out first, I was getting XML errors for having it below.
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
 
 ?>
@@ -55,18 +63,14 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 	<wp:base_site_url>http://localhost:8888</wp:base_site_url>
 	<wp:base_blog_url>http://localhost:8888</wp:base_blog_url>
 	<wp:wxr_version>1.2</wp:wxr_version>
-	<generator>http://wordpress.org/?v=3.5-RC1-22893</generator>
+	<generator>https://github.com/whyisjake/YouTube-to-WordPress-XML</generator>
 
 <?php 
 	foreach ( $videos as $video ) {
 		$t = '$t';
 		$link = $video->link;
-		//print_r($link);
-		
-		//print_r($video);
 		echo "\t" . '<item>' . "\n";
 		echo "\t\t" . '<title>' . ent2ncr( esc_html( $video->title->$t ) ) . '</title>' . "\n";
-		// echo '<link>' . esc_url($entry[0]->link[0]->href) . '</link>';
 		echo "\t\t" . '<pubDate>' . $video->published->$t . '</pubDate>' . "\n";
 		echo "\t\t" . '<dc:creator>makemagazine</dc:creator>' . "\n";
 		echo "\t\t" . '<description></description>' . "\n";
