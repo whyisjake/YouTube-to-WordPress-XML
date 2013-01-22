@@ -1,5 +1,14 @@
 <?php
 
+// Add a query parameter for playlists.
+$limit = (!empty($_REQUEST['offset']) ? $_REQUEST['offset'] : null);
+
+//Username
+$username = (!empty($_REQUEST['username']) ? $_REQUEST['username'] : null);
+
+//Start Index
+$start = (!empty($_REQUEST['start']) ? $_REQUEST['start'] : null);
+
 // Change the names of categories be dashed, rather then have spaces.
 function make_dashed($str) {
 	$dashed = str_replace(' ', '-', $str );
@@ -12,17 +21,12 @@ function make_dashed($str) {
 $GLOBALS['t'] = '$t';
 $GLOBALS['playlist'] = $videosobj->feed->title->$t;
 
-// Add a query parameter for playlists.
-$limit = (!empty($_REQUEST['offset']) ? $_REQUEST['offset'] : null);
-//Username
-$username = (!empty($_REQUEST['username']) ? $_REQUEST['username'] : null);
-//Username
-$start = (!empty($_REQUEST['start']) ? $_REQUEST['start'] : null);
+
 
 //Path to the WordPress files.
-require('../wp-load.php');
+require('../../wp-load.php');
 
-function make_get_the_playlist_feed() {
+function make_get_the_playlist_feed( $limit, $username, $start ) {
 
 	// Get the the playlist that we are going to generate the feed for.
 	// This is offset so that only one is fetched at a time.
@@ -36,7 +40,10 @@ function make_get_the_playlist_feed() {
 	$contents = file_get_contents($url);
 	$videosobj = json_decode($contents);
 	$videos = $videosobj->feed->entry;
+	return $videos;
 }
+
+$videos = make_get_the_playlist_feed( $limit, $username, $start );
 
 //Spit out the header with the correct content type.
 header("Content-type: text/xml; charset=utf-8");
