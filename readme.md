@@ -6,9 +6,9 @@ __Generate WordPress XML exports from YouTube playlists.__
 
 Using cURL, you can grab the results of the page.
 
-curl -O http://localhost:8888/video-importer/?offset=1&username=makezine&start=1
+	curl -O http://localhost:8888/video-importer/?offset=1&username=makezine&start=1
 
-There are three query parameters to add, offset, username, and start.
+There are three query parameters to add, `offset`, `username`, and `start`.
 
 ### Query String Parameters
 
