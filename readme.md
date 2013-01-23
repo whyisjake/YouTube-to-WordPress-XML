@@ -18,4 +18,6 @@ There are three query parameters to add, `offset`, `username`, and `start`.
 
 ## Batch Usage
 
-curl "http://localhost:8888/github/YouTube%20to%20WordPress%20XML/?username=makemagazine&start=1&offset={1,2,3,4,5,6,7,8,9,10}" -o "videos-export-#1.xml"
+If you want to pull down a lot of playlists at the same time, you can use the following method. Adding the numbers in the curly braces will loop through each option, getting all of the playlists. The second flag will name each file videos-export-#.xml.
+
+	curl "http://localhost:8888/github/YouTube%20to%20WordPress%20XML/?username=makemagazine&start=1&offset={1,2,3,4,5,6,7,8,9,10}" -o "videos-export-#1.xml"
