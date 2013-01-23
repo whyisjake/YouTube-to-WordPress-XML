@@ -1,4 +1,4 @@
-# YouTube-to-WordPress-XML
+# YouTube to WordPress XML
 
 __Generate WordPress XML exports from YouTube playlists.__
 
