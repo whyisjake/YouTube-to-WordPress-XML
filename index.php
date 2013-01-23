@@ -20,7 +20,6 @@ require('../../wp-load.php');
 /** Variables **/
 /***************/
 
-$GLOBALS['t'] = '$t';
 $limit = (!empty($_REQUEST['offset']) ? $_REQUEST['offset'] : null);
 $username = (!empty($_REQUEST['username']) ? $_REQUEST['username'] : null);
 $start = (!empty($_REQUEST['start']) ? $_REQUEST['start'] : null);
@@ -40,6 +39,7 @@ function make_get_the_playlist_feed( $limit, $username, $start ) {
 	// Get the the playlist that we are going to generate the feed for.
 	// This is offset so that only one is fetched at a time.
 	// Using the offset query param, you can go down the list to generate one file for each playlist.
+
 	$file = 'http://gdata.youtube.com/feeds/api/users/' . $username . '/playlists?max-results=1&alt=json&offset=1&start-index=' . $limit;
 	$contents = file_get_contents($file);
 	$playlists = json_decode($contents);
@@ -49,8 +49,6 @@ function make_get_the_playlist_feed( $limit, $username, $start ) {
 	$contents = file_get_contents($url);
 	$videosobj = json_decode($contents);
 	$videos = $videosobj->feed->entry;
-	// return $videos;
-	// return $GLOBALS['playlist'] = $videosobj->feed->title->$t;
 	$t = '$t';
 	$output = array(
 		'playlist' => $videosobj->feed->title->$t,
