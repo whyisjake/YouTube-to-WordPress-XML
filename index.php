@@ -8,6 +8,8 @@
 /** Version: 0.5
 /***************/
 
+$version = '0.5';
+
 /***************/
 /** WordPress **/
 /***************/
@@ -82,8 +84,12 @@ function make_video_item_builder( $videos ) {
 		echo "\t\t" . '<wp:post_type>post</wp:post_type>' . "\n";
 		echo "\t\t" . '<wp:post_password></wp:post_password>' . "\n";
 		echo "\t\t" . '<wp:is_sticky>0</wp:is_sticky>' . "\n";
-		echo "\t\t" . '<category domain="category" nicename="science-technology"><![CDATA[Science &amp; Technology]]></category>' . "\n";
+		echo "\t\t" . '<category domain="category" nicename="' . make_dashed( $playlist ) . '"><![CDATA[' . $playlist . ']]></category>' . "\n";
 		echo "\t\t" . '<category domain="playlist" nicename="' . make_dashed( $playlist ) . '"><![CDATA[' . $playlist . ']]></category>' . "\n";
+		echo "\t\t" . '<wp:postmeta>' . "\n";
+		echo "\t\t\t" . '<wp:meta_key>Link</wp:meta_key>' . "\n";
+		echo "\t\t\t" . '<wp:meta_value><![CDATA[' . $link[0]->href . ']]></wp:meta_value>' . "\n";
+		echo "\t\t" . '</wp:postmeta>' . "\n";
 		echo "\t" . '</item>' . "\n";
   	}
 }
@@ -104,12 +110,12 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 >
 
 <channel>
-	<title>MAKE</title>
+	<title><?php echo $username; ?> Playlist Feed</title>
 	<link>http://localhost:8888</link>
-	<description>DIY projects, how-tos, and inspiration from the workshops and minds of geeks, makers, and hackers @ Make: magazine</description>
-	<pubDate>Wed, 28 Nov 2012 18:12:25 +0000</pubDate>
+	<description></description>
+	<pubDate><?php date( 'l jS \of F Y h:i:s A' ); ?></pubDate>
 	<language>en-US</language>
-	<wp:wxr_version>1.2</wp:wxr_version>
+	<wp:wxr_version><?php echo $version; ?></wp:wxr_version>
 	<wp:base_site_url>http://localhost:8888</wp:base_site_url>
 	<wp:base_blog_url>http://localhost:8888</wp:base_blog_url>
 	<wp:wxr_version>1.2</wp:wxr_version>
